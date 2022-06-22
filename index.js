@@ -1,10 +1,11 @@
 const addInput = document.getElementById('add-input');
 const btnAdd = document.getElementById('add');
 const taskInner = document.getElementById('task-list');
-const tasks = [];
+let tasks = [];
 
 class Task {
-    constructor(value) {
+    constructor(value, id) {
+        this.id = id;
         this.value = value;
         this.completed = false;
     }
@@ -26,17 +27,30 @@ class Task {
         item.append(deleteBtn);
         taskInner.append(item);
 
+        deleteBtn.addEventListener('click', this.deleteTask)
+
         addInput.value = '';
+    }
+
+    deleteTask(e) {
+        const res = tasks.filter(item => {
+            return item.id !== this.id;
+        })
+        tasks = res;
+        e.target.parentNode.remove();
     }
 }
 
 const addTask = () => {
     const value = addInput.value;
     if (value !== '') {
-        const newTask = new Task(value);
+        let id = Number(new Date);
+        const newTask = new Task(value, id);
         tasks.push(newTask);
         newTask.innerHTML();
     }
 }
+
+
 
 btnAdd.addEventListener('click', addTask)
