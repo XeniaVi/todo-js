@@ -59,6 +59,7 @@ const filterTasks = (e) => {
     let res = [];
     taskInner.innerHTML = '';
     const id = e ? e.target.id : null;
+    filterBtns.forEach(btn => btn.classList.remove('select-btn'));
 
     switch(id) {
         case 'select-completed': 
@@ -71,6 +72,7 @@ const filterTasks = (e) => {
             res = tasks;
     }
 
+    e ? e.target.classList.add('select-btn') : filterBtns[0].classList.add('select-btn');
     res.forEach(item => item.innerHTML());
 }
 
@@ -91,6 +93,8 @@ const addTask = () => {
 const deleteAllTasks = () => {
     tasks = [];
     taskInner.innerHTML = '';
+    filterBtns.forEach(btn => btn.classList.remove('select-btn'));
+    filterBtns[0].classList.add('select-btn');
 }
 
 btnAdd.addEventListener('click', addTask)
