@@ -28,6 +28,7 @@ class Task {
         taskInner.append(item);
 
         deleteBtn.addEventListener('click', this.deleteTask)
+        checkbox.addEventListener('click', this.changeStatus.bind(this))
 
         input.value = '';
     }
@@ -36,6 +37,13 @@ class Task {
         const res = tasks.filter(item => item.id !== this.id);
         tasks = res;
         e.target.parentNode.remove();
+    }
+
+    changeStatus(e) {
+        e.target.parentNode.querySelector('span').classList.toggle('done');
+        tasks.map(item => {
+            if(item.id === this.id) item.completed = !item.completed;
+        })
     }
 }
 
