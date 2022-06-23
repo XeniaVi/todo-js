@@ -1,15 +1,15 @@
-const addInput = document.getElementById('add-input');
 const btnAdd = document.getElementById('add');
 const taskInner = document.getElementById('task-list');
-const tasks = [];
+let tasks = [];
 
 class Task {
-    constructor(value) {
+    constructor(value, id) {
+        this.id = id;
         this.value = value;
         this.completed = false;
     }
 
-    innerHTML() {
+    innerHTML(input) {
         const item = document.createElement('li');
         const checkbox = document.createElement('input');
         const text = document.createElement('span');
@@ -26,17 +26,29 @@ class Task {
         item.append(deleteBtn);
         taskInner.append(item);
 
-        addInput.value = '';
+        deleteBtn.addEventListener('click', this.deleteTask)
+
+        input.value = '';
+    }
+
+    deleteTask(e) {
+        const res = tasks.filter(item => item.id !== this.id);
+        tasks = res;
+        e.target.parentNode.remove();
     }
 }
 
 const addTask = () => {
+    const addInput = document.getElementById('add-input');
     const value = addInput.value;
-    if (value !== '') {
-        const newTask = new Task(value);
+    if (value) {
+        const id = Date.now();
+        const newTask = new Task(value, id);
         tasks.push(newTask);
-        newTask.innerHTML();
+        newTask.innerHTML(addInput);
     }
 }
+
+
 
 btnAdd.addEventListener('click', addTask)
