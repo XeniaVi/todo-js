@@ -26,8 +26,9 @@ class Task {
         item.append(deleteBtn);
         taskInner.append(item);
 
-        deleteBtn.addEventListener('click', this.deleteTask)
-        checkbox.addEventListener('click', this.changeStatus)
+
+        deleteBtn.addEventListener('click', this.deleteTask.bind(this))
+        checkbox.addEventListener('click', this.changeStatus.bind(this))
 
         input.value = '';
     }
