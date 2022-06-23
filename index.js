@@ -1,4 +1,5 @@
 const btnAdd = document.getElementById('add');
+const deleteAllBtn = document.getElementById('delete-all');
 const taskInner = document.getElementById('task-list');
 let tasks = [];
 
@@ -49,6 +50,10 @@ const addTask = () => {
     }
 }
 
-
+const deleteAllTasks = () => {
+    tasks = [];
+    taskInner.innerHTML = '';
+}
 
 btnAdd.addEventListener('click', addTask)
+deleteAllBtn.addEventListener('click', deleteAllTasks)
