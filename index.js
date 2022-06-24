@@ -2,7 +2,7 @@ const btnAdd = document.getElementById('add');
 const deleteAllBtn = document.getElementById('delete-all');
 const filterBtns = document.querySelectorAll('.filter-btn');
 const taskInner = document.getElementById('task-list');
-let tasks = [];
+let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
 
 class Task {
     constructor(value, id) {
@@ -10,55 +10,62 @@ class Task {
         this.value = value;
         this.completed = false;
     }
+}
 
-    innerHTML(input) {
-        const item = document.createElement('li');
-        const checkbox = document.createElement('input');
-        const text = document.createElement('span');
-        const deleteBtn = document.createElement('button');
+const innerHTML = (task) => {
+    const item = document.createElement('li');
+    const checkbox = document.createElement('input');
+    const text = document.createElement('span');
+    const deleteBtn = document.createElement('button');
 
-        checkbox.type = 'checkbox';
-        text.innerHTML = this.value;
-        deleteBtn.innerHTML = 'Delete';
+    item.setAttribute('id', task.id)
+    checkbox.type = 'checkbox';
+    text.innerHTML = task.value;
+    deleteBtn.innerHTML = 'Delete';
 
-        item.classList.add('task-item');
+    item.classList.add('task-item');
 
-        if(this.completed) {
-            text.classList.add('done');
-            checkbox.checked = true;
-        };
+    if(task.completed) {
+        text.classList.add('done');
+        checkbox.checked = true;
+    };
 
-        item.append(checkbox);
-        item.append(text);
-        item.append(deleteBtn);
-        taskInner.append(item);
+    item.append(checkbox);
+    item.append(text);
+    item.append(deleteBtn);
+    taskInner.append(item);
 
 
-        deleteBtn.addEventListener('click', this.deleteTask)
-        checkbox.addEventListener('click', this.changeStatus)
+    deleteBtn.addEventListener('click', deleteTask)
+    checkbox.addEventListener('click', changeStatus)
+}
 
-        if(input) input.value = '';
-    }
+const deleteTask = (e) => {
+    const id = Number(e.target.parentNode.id);
 
-    deleteTask = (e) => {
-        const res = tasks.filter(item => item.id !== this.id);
-        tasks = res;
-        e.target.parentNode.remove();
-    }
+    tasks = tasks.filter(item => item.id !== id);
+    e.target.parentNode.remove();
 
-    changeStatus = (e) => {
-        e.target.parentNode.querySelector('span').classList.toggle('done');
-        
-        tasks.map(item => {
-            if(item.id === this.id) item.completed = !item.completed;
-        })
-    }
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+}
+
+const changeStatus = (e) => {
+    const id = Number(e.target.parentNode.id);
+    e.target.parentNode.querySelector('span').classList.toggle('done');
+    
+    tasks.map(item => {
+        if(item.id === id) item.completed = !item.completed;
+    })
+
+    localStorage.setItem("tasks", JSON.stringify(tasks));
 }
 
 const filterTasks = (e) => {
     let res = [];
-    taskInner.innerHTML = '';
     const id = e ? e.target.id : null;
+
+    taskInner.innerHTML = '';
+
     filterBtns.forEach(btn => btn.classList.remove('select-btn'));
 
     switch(id) {
@@ -73,8 +80,10 @@ const filterTasks = (e) => {
     }
 
     e ? e.target.classList.add('select-btn') : filterBtns[0].classList.add('select-btn');
-    res.forEach(item => item.innerHTML());
+
+    res.forEach(item => innerHTML(item));
 }
+
 
 const addTask = () => {
     const addInput = document.getElementById('add-input');
@@ -85,17 +94,28 @@ const addTask = () => {
     if (value) {
         const id = Date.now();
         const newTask = new Task(value, id);
+
         tasks.push(newTask);
-        newTask.innerHTML(addInput);
+        innerHTML(newTask);
     }
+
+    addInput.value = '';
+
+    localStorage.setItem("tasks", JSON.stringify(tasks));
 }
 
 const deleteAllTasks = () => {
     tasks = [];
+
     taskInner.innerHTML = '';
+
     filterBtns.forEach(btn => btn.classList.remove('select-btn'));
     filterBtns[0].classList.add('select-btn');
+
+    localStorage.setItem("tasks", JSON.stringify(tasks));
 }
+
+tasks.forEach(item => innerHTML(item));
 
 btnAdd.addEventListener('click', addTask)
 deleteAllBtn.addEventListener('click', deleteAllTasks)
