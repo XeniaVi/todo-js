@@ -13,3 +13,7 @@
 .done {
     text-decoration: line-through;
 }
+
+.select-btn {
+    background-color: rgb(189, 216, 189);
+}

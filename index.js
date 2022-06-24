@@ -1,5 +1,6 @@
 const btnAdd = document.getElementById('add');
 const deleteAllBtn = document.getElementById('delete-all');
+const filterBtns = document.querySelectorAll('.filter-btn');
 const taskInner = document.getElementById('task-list');
 let tasks = [];
 
@@ -21,15 +22,22 @@ class Task {
         deleteBtn.innerHTML = 'Delete';
 
         item.classList.add('task-item');
+
+        if(this.completed) {
+            text.classList.add('done');
+            checkbox.checked = true;
+        };
+
         item.append(checkbox);
         item.append(text);
         item.append(deleteBtn);
         taskInner.append(item);
 
+
         deleteBtn.addEventListener('click', this.deleteTask)
         checkbox.addEventListener('click', this.changeStatus)
 
-        input.value = '';
+        if(input) input.value = '';
     }
 
     deleteTask = (e) => {
@@ -47,9 +55,32 @@ class Task {
     }
 }
 
+const filterTasks = (e) => {
+    let res = [];
+    taskInner.innerHTML = '';
+    const id = e ? e.target.id : null;
+    filterBtns.forEach(btn => btn.classList.remove('select-btn'));
+
+    switch(id) {
+        case 'select-completed': 
+            res = tasks.filter(item => item.completed);
+            break;
+        case 'select-not-completed': 
+            res = tasks.filter(item => !item.completed);
+            break;
+        default:
+            res = tasks;
+    }
+
+    e ? e.target.classList.add('select-btn') : filterBtns[0].classList.add('select-btn');
+    res.forEach(item => item.innerHTML());
+}
+
 const addTask = () => {
     const addInput = document.getElementById('add-input');
     const value = addInput.value;
+
+    filterTasks();
 
     if (value) {
         const id = Date.now();
@@ -62,7 +93,10 @@ const addTask = () => {
 const deleteAllTasks = () => {
     tasks = [];
     taskInner.innerHTML = '';
+    filterBtns.forEach(btn => btn.classList.remove('select-btn'));
+    filterBtns[0].classList.add('select-btn');
 }
 
 btnAdd.addEventListener('click', addTask)
 deleteAllBtn.addEventListener('click', deleteAllTasks)
+filterBtns.forEach(btn => btn.addEventListener('click', filterTasks))
