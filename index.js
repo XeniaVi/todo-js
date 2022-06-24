@@ -21,26 +21,26 @@ class Task {
         deleteBtn.innerHTML = 'Delete';
 
         item.classList.add('task-item');
-
         item.append(checkbox);
         item.append(text);
         item.append(deleteBtn);
         taskInner.append(item);
 
         deleteBtn.addEventListener('click', this.deleteTask)
-        checkbox.addEventListener('click', this.changeStatus.bind(this))
+        checkbox.addEventListener('click', this.changeStatus)
 
         input.value = '';
     }
 
-    deleteTask(e) {
+    deleteTask = (e) => {
         const res = tasks.filter(item => item.id !== this.id);
         tasks = res;
         e.target.parentNode.remove();
     }
 
-    changeStatus(e) {
+    changeStatus = (e) => {
         e.target.parentNode.querySelector('span').classList.toggle('done');
+        
         tasks.map(item => {
             if(item.id === this.id) item.completed = !item.completed;
         })
@@ -50,6 +50,7 @@ class Task {
 const addTask = () => {
     const addInput = document.getElementById('add-input');
     const value = addInput.value;
+
     if (value) {
         const id = Date.now();
         const newTask = new Task(value, id);
